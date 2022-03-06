@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<info xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+    <id>mywiki</id>
+    <name>My Wiki</name>
+    <summary>Wiki personal para organizar tus notas</summary>
+    <description><![CDATA[Wiki personal para organizar tus notas]]></description>
+    <version>0.0.1</version>
+    <licence>agpl</licence>
+    <author mail="jd@infdj.com" homepage="https://jd.guillen.io">José David Guillén Dominguez</author>
+    <namespace>MyWiki</namespace>
+    <category>office</category>
+    <category>organization</category>
+    <bugs>https://git.jd.guillen.io/wiki4nextcloud/issues</bugs>
+    <dependencies>
+        <nextcloud min-version="12" max-version="12"/>
+    </dependencies>
+    <navigations>
+        <navigation>
+            <name>My Wiki</name>
+            <route>mywiki.page.index</route>
+        </navigation>
+    </navigations>
+</info>

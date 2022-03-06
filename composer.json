@@ -1,0 +1,15 @@
+{
+    "name": "jdg/mywiki",
+    "description": "Wiki personal para organizar tus notas",
+    "type": "project",
+    "license": "AGPL",
+    "authors": [
+        {
+            "name": "José David Guillén Dominguez"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "^5.4"
+    }
+}
