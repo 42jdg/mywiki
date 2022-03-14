@@ -1,6 +1,6 @@
 <?php
-script('mywiki', 'script');
-style('mywiki', 'style');
+\OCP\Util::addScript('mywiki', 'script');
+\OCP\Util::addStyle('mywiki', 'style');
 ?>
 
 <div id="app">

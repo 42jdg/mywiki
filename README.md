@@ -74,3 +74,5 @@ https://c.infdj.com/apps/files/?dir=/Documents/Manuals%20-%20Drivers/drivers/MAD
 https://docs.nextcloud.com/server/latest/developer_manual/digging_deeper/api.html
 
 phpunit -c phpunit.integration.xml
+
+https://github.com/nextcloud/nextcloud-vue

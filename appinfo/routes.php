@@ -9,9 +9,11 @@
  */
 return [
     'resources' => [
-        'wiki' => ['url' => '/wiki']
+        'wiki' => ['url' => '/wikis']
     ],
     'routes' => [
-        ['name' => 'page#index', 'url' => '/', 'verb' => 'GET']
+        ['name' => 'page#index', 'url' => '/', 'verb' => 'GET'],
+        ['name' => 'page#test', 'url' => '/test', 'verb' => 'GET'],
+        ['name' => 'wiki#test', 'url' => '/wikis/test', 'verb' => 'GET']
     ]
 ];

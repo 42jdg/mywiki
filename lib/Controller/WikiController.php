@@ -23,9 +23,15 @@
      /**
       * @NoAdminRequired
       */
-     public function index() {
-        return new DataResponse($this->service->test($this->userId));
+      public function test() {
+        $x = $this->service->test($this->userId);
+        return new DataResponse(print_r($x,true));
+      }
 
+    /**
+      * @NoAdminRequired
+      */
+     public function index() {
          return new DataResponse($this->service->findAll($this->userId));
      }
 

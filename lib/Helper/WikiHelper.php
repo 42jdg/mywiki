@@ -1,32 +1,25 @@
 <?php
 namespace OCA\MyWiki\Helper;
 
-use OCP\AppFramework\Files\Folder;
+use OCP\Files\IRootFolder;
 
 class WikiHelper {
-    public static function isFolder(int $folderId) :bool {
-        $mount = \OC\Files\Filesystem::getMountsForFileId($folderId);
-        /*
-        isReadable()    
-        getById($folderId) 
-        isCreatable()
-        isUpdateable()
-        lock()
-
-$config = new \OC\Config('config/');
- $base_path = $config->getValue('datadirectory')
-
-datadirectory is the key in the array defined in config.php that contains the base directory.
-
-$basepath now contains a path like /var/www/html/nextcloud/data.        
-        */
-        // ToDo
-        $nodes = \OC\Files\Node\Folder::getById($folderId);
-
-        return true;
+    public static function isFolder(IRootFolder $storage, int $folderId) :bool {
+        $nodes = $storage->getById($folderId);
+        if ( count($nodes)>0 ) {
+            return $nodes[0]->getType() == \OCP\Files\Node::TYPE_FOLDER;
+        }
+        return false;
     }
-    public static function isWiki(int $folderId) :bool {
-        return \OC\Files\Filesystem::nodeExists('.wiki');
+    public static function isWiki(IRootFolder $storage, int $folderId) :string {
+        $nodes = $storage->getById($folderId);
+        if ( count($nodes)>0 ) {
+            $nodeStorage = $nodes[0]->getStorage();
+            return $nodeStorage->file_get_contents('/wiki.yaml');
+            // getPath()
+            // getStorage()
+        }
+        return false;
     }
     public static function initWiki(int $folderId, string $title) :bool {
         // ToDo

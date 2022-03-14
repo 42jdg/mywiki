@@ -10,20 +10,28 @@ use OCA\MyWiki\Db\Wiki;
 use OCA\MyWiki\Db\WikiMapper;
 use OCA\MyWiki\Helper\WikiHelper;
 
+use \OCP\Files\Storage;
+use \OCP\Files\IRootFolder;
+
+use \OCP\IUserSession;
+
 class WikiService {
  
     private $mapper;
-    private $rootFolder;
+    private $storage;
+    private $userSession;
 
-    public function __construct(WikiMapper $mapper,IRootFolder $rootFolder){
+    public function __construct(WikiMapper $mapper, IRootFolder $storage) {
+        // , IUserSession $userSession ) {
         $this->mapper = $mapper;
-		$this->rootFolder = $rootFolder;
+		// $this->userSession = $userSession;
+		$this->storage = $storage;
 
         // , IUserSession $userSession
     }
 
     public function test(string $userId) {
-        echo 'JDG :: Test for '.$userId;
+        return WikiHelper::isWiki($this->storage, 208);
     }
 
     public function findAll(string $userId) {

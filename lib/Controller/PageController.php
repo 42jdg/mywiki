@@ -28,4 +28,11 @@ class PageController extends Controller {
 		return new TemplateResponse('mywiki', 'index');  // templates/index.php
 	}
 
+     /**
+      * @NoAdminRequired
+      */
+      public function test() {
+		  return new DataResponse('JDG::Test');
+	}
+
 }
