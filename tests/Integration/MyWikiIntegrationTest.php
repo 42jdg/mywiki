@@ -37,12 +37,6 @@ class MyWikiIntegrationTest extends TestCase {
 
     public function e($x) { echo "\n>>>$x<<<"; }
 
-    public function testJDG() {
-
-        $x = \OC\Files\Filesystem::getLocalFolder('\\');
-
-        $this->e(print_r($x,true));
-    }
 /*
     public function testUpdate() {
         // create a new note that should be updated

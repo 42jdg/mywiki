@@ -24,7 +24,7 @@
       * @NoAdminRequired
       */
       public function test() {
-        $x = $this->service->test($this->userId);
+        $x = $this->service->test();
         return new DataResponse(print_r($x,true));
       }
 
