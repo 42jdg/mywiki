@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'a30a4f13ec699c6e80f32148dc3aa017511c5f5a',
+        'reference' => '9c6114cf8643a84a9536074942d2e7f1a8451cd0',
         'name' => 'jdg/mywiki',
         'dev' => true,
     ),
@@ -25,7 +25,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'a30a4f13ec699c6e80f32148dc3aa017511c5f5a',
+            'reference' => '9c6114cf8643a84a9536074942d2e7f1a8451cd0',
             'dev_requirement' => false,
         ),
         'myclabs/deep-copy' => array(

@@ -19,7 +19,7 @@ class Wiki extends Entity implements JsonSerializable {
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'file_id' => $this->file_id
+            'fileId' => $this->fileId
         ];
     }
 }

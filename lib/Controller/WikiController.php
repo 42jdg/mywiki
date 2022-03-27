@@ -51,12 +51,12 @@
     /**
       * @NoAdminRequired
       *
+      * @param string $folderPath
       * @param string $title
-      * @param string $fileId
-      */
-    public function create(string $title, int $fileId) {
-        return $this->handleReadOnly(function () use ($title, $fileId) {
-            return $this->service->create($title, $fileId, $this->userId);
+      */    
+    public function create(string $folderPath, string $title) {
+        return $this->handleReadOnly(function () use ($folderPath, $title) {
+            return $this->service->create($folderPath, $title, $this->userId);
         });     
     }
 

@@ -39,6 +39,7 @@
 
             $table->setPrimaryKey(['id']);
             $table->addIndex(['user_id'], 'mywiki_user_id_index');
+            $table->addIndex(['file_id'], 'mywiki_file_id_index');
         }
 
 /*

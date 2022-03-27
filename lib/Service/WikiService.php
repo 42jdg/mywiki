@@ -25,7 +25,7 @@ class WikiService {
     }
 
     public function test() {
-        $folderId = 381;
+        $folderId = 880;
         return  $this->wikiHelper->setFolderId($folderId)->reloadWikiTree();
         return  $this->wikiHelper->setFolderId($folderId)->rename(707, 'UnoMasUno');
         return  $this->wikiHelper->setFolderId($folderId)->rename(647, 'RenameTest3');
@@ -57,17 +57,20 @@ class WikiService {
         }
     }
 
-    public function create(string $title, int $fileId, string $userId) {
-        $this->wikiHelper->setFolderId($fileId);
-        if ( $this->wikiHelper->isWiki() ) {
-            if ( !$this->wikiHelper->initWiki($title) ) {
-                throw new ReadOnlyException('Error creating wiki');
-            } 
+    public function create(string $folderPath, string $title, string $userId) {
+        $folderId = $this->wikiHelper->initWiki($folderPath, $title);
+        if ( $folderId === null ) {
+            throw new ReadOnlyException('Error creating wiki');
+        }
+
+        $wikis = $this->mapper->findAll($userId, ['fileId'=>$folderId]);
+        if ( count($wikis)>0 ) {
+            return $wikis[0];
         }
 
         $wiki = new Wiki();
         $wiki->setTitle($title);
-        $wiki->setFileId($fileId);
+        $wiki->setFileId($folderId);
         $wiki->setUserId($userId);
         return $this->mapper->insert($wiki);
     }

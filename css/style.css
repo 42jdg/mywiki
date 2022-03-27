@@ -1,3 +1,23 @@
 #hello {
 	color: red;
 }
+
+li[data-id="wikis"] select {
+	width: calc(100% - 50px);
+}
+
+.-myWikiControls {
+	width: 100%;
+	margin: .25em;
+}
+.-myWikiControls select {
+	width: 98%;
+}
+
+option.separator {
+	font-size: 1px;
+	min-height:1px; 
+	max-height:1px; 
+	padding:0;  
+	background-color: #000000;
+}

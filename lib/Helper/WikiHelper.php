@@ -96,16 +96,24 @@ class WikiHelper {
         return true;
     }
 
-    public function initWiki(string $title) :bool {
-        $wiki = [
-                    "title"=>$title, 
-                    "folderId"=>$this->wikiFolder->getId(),
-                    "pages"=>$this->rebuildWikiTree()
-        ];
-        if ( $this->getWikiData() === null ) {
-            return $this->setWikiData($wiki);
+    public function initWiki(string $folderPath, string $title) :?int {
+        $this->wikiFolder = $this->userFolder->get($folderPath);
+        if ( !$this->isWiki() ) {
+            return null;
         }
-        return true;
+
+        $folderId = $this->wikiFolder->getId();
+        if ( $this->getWikiData() === null ) {
+            $wiki = [
+                "title"=>$title, 
+                "folderId"=>$folderId,
+                "pages"=>$this->rebuildWikiTree()
+            ];
+            if ( !$this->setWikiData($wiki) ) {
+                return null;
+            }
+        }
+        return $folderId;
     }
 
     public function add(int $parentId, string $title) {
