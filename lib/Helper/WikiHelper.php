@@ -60,16 +60,10 @@ class WikiHelper {
         return $this;
     }
 
-    private function isWiki() :bool {
+    private function isWikiable() :bool {
         return $this->wikiFolder && $this->wikiFolder->getType() == \OCP\Files\Node::TYPE_FOLDER;
     }
 
-    public function reloadWikiTree(): array {
-        $wiki = $this->getWikiData();
-        $wiki['pages'] = $this->rebuildWikiTree();
-        $this->setWikiData($wiki);
-        return $wiki;
-    }
 
     public function getWikiData(): ?array {
         try {
@@ -96,24 +90,33 @@ class WikiHelper {
         return true;
     }
 
+    public function createWikiData(): array {
+        $wiki = [
+            "title"=>$this->wikiFolder->getName(),
+            "folderId"=>$this->wikiFolder->getId(),
+            "pages"=>[]
+        ];
+        $wiki['pages'] = $this->rebuildWikiTree();
+        return $wiki;
+    }
+
+    public function rebuildWiki($title): ?array {
+        $wiki = $this->createWikiData(true);
+        $wiki['title'] = $title;
+        return $this->setWikiData($wiki) ? $wiki : null;
+    }
+
     public function initWiki(string $folderPath, string $title) :?int {
         $this->wikiFolder = $this->userFolder->get($folderPath);
-        if ( !$this->isWiki() ) {
+        if ( !$this->isWikiable() ) {
             return null;
         }
-
-        $folderId = $this->wikiFolder->getId();
         if ( $this->getWikiData() === null ) {
-            $wiki = [
-                "title"=>$title, 
-                "folderId"=>$folderId,
-                "pages"=>$this->rebuildWikiTree()
-            ];
-            if ( !$this->setWikiData($wiki) ) {
+            if ( $this->rebuildWiki($title) === null ) {
                 return null;
             }
         }
-        return $folderId;
+        return $this->wikiFolder->getId();
     }
 
     public function add(int $parentId, string $title) {

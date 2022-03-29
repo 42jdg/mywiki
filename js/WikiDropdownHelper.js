@@ -1,8 +1,9 @@
 'use strict';
 
 class WikiDropdownHelper {
-    constructor(element) {
+    constructor(element, onChange) {
         this.dd = element;
+        this.dd.addEventListener('change', e=>onChange(+e.target.value||0));
     }
     clear() {
         while (this.dd.hasChildNodes()) {
@@ -20,18 +21,26 @@ class WikiDropdownHelper {
         }
         return this;
     }
-    rename(value, text) {
-        this.dd.querySelector(`option[value="${value}"]`).innerHTML=text;
+    delete(value) {
+        let index = Array.from(this.dd.options).findIndex(option=>option.value==value);
+        if (index>0) {
+            this.dd.remove(index);  
+        }
+        return this;
+    }
+    rename(value, newText) {
+        this.dd.querySelector(`option[value="${value}"]`).innerHTML=newText;
         return this;
     }
     get() {
         return {
-                 text:this.dd.parentElement.value,
-                 value:this.dd.parentElement.text
+                 text:this.dd.options[this.dd.selectedIndex].innerHTML,
+                 value:this.dd.value
         };
     }
     set(value) {
         this.dd.parentElement.value=value;
         // this.onSelectWiki(value);
+        return this;
     }
 }

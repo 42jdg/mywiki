@@ -13,20 +13,20 @@
 			<li>
 				<a href="#" data-id="add">
 					<span class="icon-add"></span>
-					<span>Add</span>
+					<span>Add Wiki</span>
 				</a>
 			</li>
 			<li>
-				<a href="#" data-id="rename">
+				<button disabled data-id="rename">
 					<span class="icon-rename"></span>
-					<span>Edit</span>
-				</a>
+					<span>Rename Wiki</span>
+				</button>
 			</li>
 			<li>
-				<a href="#" data-id="delete">
+				<button disabled data-id="delete">
 					<span class="icon-delete"></span>
-					<span>Remove</span>
-				</a>
+					<span>Delete Wiki</span>
+				</button>
 			</li>
 		</ul>
 		</div>	

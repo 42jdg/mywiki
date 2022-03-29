@@ -10,23 +10,54 @@ class WikiNavigation {
         this.onSelectWiki = onSelectWiki;
 
         let wikiSelector = container.getElementsByTagName('select')[0];
-        this.dd = new WikiDropdownHelper(wikiSelector);
-        wikiSelector.addEventListener('change', e=>{
-            if(self.onSelectWiki) {
-                self.onSelectWiki(+e.target.value||0);
-            }
-        });
+
+        let appNavigationMenu = container.getElementsByClassName('app-navigation-entry-menu')[0];
+        let menuEntry = {
+                add:appNavigationMenu.querySelector('[data-id="add"]'),
+                rename:appNavigationMenu.querySelector('[data-id="rename"]'),
+                delete:appNavigationMenu.querySelector('[data-id="delete"]')
+        };
+        this.dd = new WikiDropdownHelper(wikiSelector, id=>{
+            menuEntry.rename.disabled = (id==0);
+            menuEntry.delete.disabled = (id==0);
+            self.onSelectWiki(id);
+         } );
         this.loadWikis();
 
         // Popup menu
-        let appNavigationMenu = container.getElementsByClassName('app-navigation-entry-menu')[0];
         let button = container.querySelector('.app-navigation-entry-utils-menu-button button');
         button.addEventListener('click', ()=>appNavigationMenu.classList.toggle("open") );
         document.addEventListener('click', e=>{if(e.target!==button)appNavigationMenu.classList.remove("open");})
 
-        appNavigationMenu.querySelector('[data-id="add"]').addEventListener('click', ()=>self.wikiChooseFolder() );
-        appNavigationMenu.querySelector('[data-id="rename"]').addEventListener('click', ()=>self.wikiRename() );
-        appNavigationMenu.querySelector('[data-id="delete"]').addEventListener('click', ()=>self.wikiDelete() );
+        menuEntry.add.addEventListener('click', ()=>self.wikiChooseFolder() );
+        menuEntry.rename.addEventListener('click', ()=>self.wikiRename() );
+        menuEntry.delete.addEventListener('click', ()=>self.wikiDelete() );
+    }
+
+    wikiDelete() {
+        let self=this;
+        let wiki = this.dd.get();
+        OC.dialogs.confirm( t(appName, 'Delete the wiki {text}?', wiki),
+                            t(appName, 'Delete Wiki'),
+                            (ok)=>{
+                                if ( ok ) {
+                                    var baseUrl = OC.generateUrl('/apps/mywiki/wikis');
+                                    $.ajax({
+                                        url: baseUrl+'/'+wiki.value,
+                                        type: 'DELETE',
+                                        contentType: 'application/json',
+                                        data: JSON.stringify({removeFiles:false})
+                                    }).done(function (response) {
+                                        console.info('JDG :: Wiki deleted', response);
+                                        self.dd.set('').delete(wiki.value);
+                                    }).fail(function (response, code) {
+                                        OC.dialogs.alert('Error', t(appName,'Error deleting wiki {text}', wiki));
+                                        console.error('JDG :: Error deleting wiki', response);
+                                    }); 
+                                } 
+                            },
+                            false
+                        );
     }
 
     wikiRename() {
@@ -41,13 +72,13 @@ class WikiNavigation {
                                         let wiki = self.dd.get();
                                         var baseUrl = OC.generateUrl('/apps/mywiki/wikis');
                                         $.ajax({
-                                            url: baseUrl,
+                                            url: baseUrl+'/'+wiki.value,
                                             type: 'PUT',
                                             contentType: 'application/json',
-                                            data: JSON.stringify({id:wiki.value, title:value})
+                                            data: JSON.stringify({title:value})
                                         }).done(function (response) {
                                             console.info('JDG :: Wiki renamed', response);
-                                            // ToDo :: Rename in the dropdown
+                                            self.dd.rename(response.id, response.title);
                                         }).fail(function (response, code) {
                                             OC.dialogs.alert('Error', t(appName,'Error renaming wiki'));
                                             console.error('JDG :: Error renaming wiki', response);
@@ -56,7 +87,7 @@ class WikiNavigation {
                                 }
                             },
                             false,
-                            t(appName, 'New name:'),
+                            t(appName, 'New name'),
                             false
                         );
     }
