@@ -11,22 +11,16 @@
 		<div class="app-navigation-entry-menu">
 		<ul>
 			<li>
-				<a href="#" data-id="add">
-					<span class="icon-add"></span>
-					<span>Add Wiki</span>
-				</a>
+				<button data-id="add" class="icon-folder">Add Wiki</button>
 			</li>
 			<li>
-				<button disabled data-id="rename">
-					<span class="icon-rename"></span>
-					<span>Rename Wiki</span>
-				</button>
+				<button disabled data-id="addPage" class="icon-add">Add Page</button>
 			</li>
 			<li>
-				<button disabled data-id="delete">
-					<span class="icon-delete"></span>
-					<span>Delete Wiki</span>
-				</button>
+				<button disabled data-id="rename" class="icon-rename">Rename Wiki</button>
+			</li>
+			<li>
+				<button disabled data-id="delete" class="icon-delete">Delete Wiki</button>
 			</li>
 		</ul>
 		</div>	

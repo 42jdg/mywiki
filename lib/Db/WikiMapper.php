@@ -34,7 +34,7 @@ class WikiMapper extends QBMapper {
         return $this->findEntity($qb);
     }
     
-    public function findAll(string $userId, mixed $filter=null) {
+    public function findAll(string $userId, ?array $filter=null) {
         $qb = $this->db->getQueryBuilder();
 
         $qb->select('*')
@@ -46,12 +46,12 @@ class WikiMapper extends QBMapper {
         if ($filter) {
             if (array_key_exists('title',$filter) ) {
                 $qb->where(
-                    $qb->expr()->eq('title', $qb->createNamedParameter($id))
+                    $qb->expr()->eq('title', $qb->createNamedParameter($filter['title']))
                 );
             }                    
             if (array_key_exists('fileId',$filter) ) {
                 $qb->where(
-                    $qb->expr()->eq('fileId', $qb->createNamedParameter($id))
+                    $qb->expr()->eq('file_id', $qb->createNamedParameter($filter['fileId']))
                 );
             }      
         }

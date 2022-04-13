@@ -9,7 +9,8 @@
  */
 return [
     'resources' => [
-        'wiki' => ['url' => '/wikis']
+        'wiki' => ['url' => '/wikis'],
+        'wikiPage' => ['url' => '/wiki/{wikiId}']
     ],
     'routes' => [
         ['name' => 'page#index', 'url' => '/', 'verb' => 'GET'],

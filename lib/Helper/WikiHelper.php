@@ -106,7 +106,7 @@ class WikiHelper {
         return $this->setWikiData($wiki) ? $wiki : null;
     }
 
-    public function initWiki(string $folderPath, string $title) :?int {
+    public function create(string $folderPath, string $title) :?int {
         $this->wikiFolder = $this->userFolder->get($folderPath);
         if ( !$this->isWikiable() ) {
             return null;
@@ -119,21 +119,36 @@ class WikiHelper {
         return $this->wikiFolder->getId();
     }
 
-    public function add(int $parentId, string $title) {
-// $folder = ...newFolder($path)
+    public function add(int $parentId, string $title, ?string $content) :int {
+        if ($parentId>0) {
+            $parentFolder = $this->getFolderById($parentId);
+        } else {
+            $parentFolder = $this->wikiFolder;
+        }
+        try {
+            $folder = $parentFolder->newFolder($this->sanitize_file_name($title));
 
-$wikiData = $this->getWikiData();
-if ($wikiData) {
-    $wikiTree = new WikiTree($wikiData['pages']);
-    $wikiPage = new WikiTreePage();
-    $wikiPage->id = $id;
-    $wikiPage->pid = $parentId;
-    $wikiPage->title = $title;
-    $wikiTree->set($wikiPage);
-    $wikiData['pages'] = $wikiTree->getWikiPages();
-    $this->setWikiData($wikiData);
-}
+            $wikiTreePage = new WikiTreePage();
+            $wikiTreePage->id = $folder->getId();
+            $wikiTreePage->pid = $parentId;
+            $wikiTreePage->title = $title;
+            $wikiTreePage->sort = 0;                
 
+            if ( !is_null($content) ) {
+                $this->update($wikiTreePage->id, $content);
+            }
+
+            $wikiData = $this->getWikiData();
+            if ($wikiData) {
+                $wikiTree = new WikiTree($wikiData['pages']);
+                $wikiTree->set($wikiTreePage);
+                $wikiData['pages'] = $wikiTree->getWikiPages();
+                $this->setWikiData($wikiData);
+            }
+        } catch(\Exception $ex) {
+            return -1;
+        }
+        return $wikiTreePage->id; 
     }
 
     public function update(int $id, string $content) {

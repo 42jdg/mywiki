@@ -58,7 +58,7 @@ class WikiService {
     }
 
     public function create(string $folderPath, string $title, string $userId) {
-        $folderId = $this->wikiHelper->initWiki($folderPath, $title);
+        $folderId = $this->wikiHelper->create($folderPath, $title);
         if ( $folderId === null ) {
             throw new ReadOnlyException('Error creating wiki');
         }
@@ -79,7 +79,8 @@ class WikiService {
         try {
             $wiki = $this->mapper->find($id, $userId);
             $wiki->setTitle($title);
-            return $this->mapper->update($wiki);
+            $res = $this->mapper->update($wiki);
+            return $res;
         } catch(Exception $e) {
             $this->handleException($e);
         }

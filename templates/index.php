@@ -1,6 +1,7 @@
 <?php
 \OCP\Util::addScript('mywiki', 'WikiDropdownHelper');
 \OCP\Util::addScript('mywiki', 'WikiNavigation');
+\OCP\Util::addScript('mywiki', 'WikiPages');
 \OCP\Util::addScript('mywiki', 'script');
 \OCP\Util::addStyle('mywiki', 'style');
 ?>

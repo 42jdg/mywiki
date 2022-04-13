@@ -4,31 +4,30 @@ class WikiNavigation {
     dd = null;
     onSelectWiki = null;
 
-    constructor(container, onSelectWiki){
+    constructor(container, onSelectWiki, onClickAddPage){
         let self = this;
         this.container = container;
         this.onSelectWiki = onSelectWiki;
+        this.onClickAddPage = onClickAddPage;
 
         let wikiSelector = container.getElementsByTagName('select')[0];
 
         let appNavigationMenu = container.getElementsByClassName('app-navigation-entry-menu')[0];
         let menuEntry = {
+                addPage:appNavigationMenu.querySelector('[data-id="addPage"]'),
                 add:appNavigationMenu.querySelector('[data-id="add"]'),
                 rename:appNavigationMenu.querySelector('[data-id="rename"]'),
                 delete:appNavigationMenu.querySelector('[data-id="delete"]')
         };
         this.dd = new WikiDropdownHelper(wikiSelector, id=>{
+            menuEntry.addPage.disabled = (id==0);
             menuEntry.rename.disabled = (id==0);
             menuEntry.delete.disabled = (id==0);
             self.onSelectWiki(id);
          } );
         this.loadWikis();
 
-        // Popup menu
-        let button = container.querySelector('.app-navigation-entry-utils-menu-button button');
-        button.addEventListener('click', ()=>appNavigationMenu.classList.toggle("open") );
-        document.addEventListener('click', e=>{if(e.target!==button)appNavigationMenu.classList.remove("open");})
-
+        menuEntry.addPage.addEventListener('click', e=>self.onClickAddPage(e) );
         menuEntry.add.addEventListener('click', ()=>self.wikiChooseFolder() );
         menuEntry.rename.addEventListener('click', ()=>self.wikiRename() );
         menuEntry.delete.addEventListener('click', ()=>self.wikiDelete() );
@@ -48,11 +47,11 @@ class WikiNavigation {
                                         contentType: 'application/json',
                                         data: JSON.stringify({removeFiles:false})
                                     }).done(function (response) {
-                                        console.info('JDG :: Wiki deleted', response);
+                                        console.info('JDG :: WikiNavigation.wikiDelete()', response);
                                         self.dd.set('').delete(wiki.value);
                                     }).fail(function (response, code) {
                                         OC.dialogs.alert('Error', t(appName,'Error deleting wiki {text}', wiki));
-                                        console.error('JDG :: Error deleting wiki', response);
+                                        console.error('JDG :: WikiNavigation.wikiDelete()', response);
                                     }); 
                                 } 
                             },
@@ -61,7 +60,7 @@ class WikiNavigation {
     }
 
     wikiRename() {
-        let self=this;
+        const self=this;
         OC.dialogs.prompt(
                             t(appName, 'This allow you to rename the displayed name for the selected wiki. (The folder will remain unchanged)'),
                             t(appName, 'Rename Wiki'),
@@ -77,11 +76,11 @@ class WikiNavigation {
                                             contentType: 'application/json',
                                             data: JSON.stringify({title:value})
                                         }).done(function (response) {
-                                            console.info('JDG :: Wiki renamed', response);
+                                            console.info('JDG :: WikiNavigation.wikiRename()', response);
                                             self.dd.rename(response.id, response.title);
                                         }).fail(function (response, code) {
                                             OC.dialogs.alert('Error', t(appName,'Error renaming wiki'));
-                                            console.error('JDG :: Error renaming wiki', response);
+                                            console.error('JDG :: WikiNavigation.wikiRename()', response);
                                         });                                        
                                     }
                                 }
@@ -103,12 +102,12 @@ class WikiNavigation {
             type: 'GET',
             contentType: 'application/json'
         }).done(function (response) {
-            console.info('JDG :: Wikis loaded', response);
+            console.info('JDG :: WikiNavigation.loadWikis()', response);
             self.dd.clear().add('','');
             response.forEach( x=>self.dd.add(x.title, x.id) );
         }).fail(function (response, code) {
             OC.dialogs.alert('Error', t(appName,'Error getting the list of wikis'));
-            console.error('JDG :: Error getting the wikis', response);
+            console.error('JDG :: WikiNavigation.loadWikis()', response);
             self.dd.clear();
         });
     }    
@@ -142,13 +141,13 @@ class WikiNavigation {
             data: JSON.stringify({title:title, folderPath:folderPath}),
             contentType: 'application/json'
         }).done(function (response) {
-            console.info('JDG :: wikiAdd :: Wiki added', response);
+            console.info('JDG :: WikiNavigation.wikiAdd("'+folderPath+'","'+title+'")', response);
             if ( response.id>0 ) {
                 self.dd.add(response.title, response.id, true);
             }
         }).fail(function (response, code) {
             OC.dialogs.alert('Error', t(appName,'It has not been possible to add the new wiki'));
-            console.error('JDG :: wikiAdd :: Error adding the wiki', response);
+            console.error('JDG :: WikiNavigation.wikiAdd("'+folderPath+'","'+title+'")', response);
         });
     }
 }

@@ -1,26 +1,6 @@
 const appName = 'MyWiki';
 
-class WikiPages {
-    constructor(container){
-        this.wikiId = null;
-    }
-    load(wikiId) {
-        console.info('JDG :: Loading wiki', wikiId );
-        this.wikiId = wikiId;
-    }
-    getWikiId() {
-        return this.wikiId;
-    }
-    add(parentPageId, title) {
 
-    }
-    delete() {
-
-    }
-    rename() {
-
-    }
-}
 class WikiEditor {
     load(wikiId, wikiPageId) {
         console.info(`JDG :: Loading Wiki ${wikiId}/${wikiPageId}`);
@@ -33,14 +13,35 @@ var MyWiki = MyWiki || {};
 (function(window, $, exports, undefined) {
     'use strict';
 
-    let wikiNavigation = new WikiNavigation(document.querySelector('li[data-id="wikis"]'), onSelectWiki);
-    let wikiPages = new WikiPages(document.querySelector('li[data-id="pages"]'), onSelectWikiPage);
-    function onSelectWiki(wikiId) {
-        console.info(`JDG :: WikiList selected ${wikiId}` );
-        if ( wikiId > 0 ) {
-            wikiPages.load(wikiId);
-        }
+    // Navigation menu --------------------------------
+    function appNavigationEntryMenuClose() {
+        document.querySelectorAll('.app-navigation-entry-menu').forEach(e=>e.classList.remove("open"));
     }
+    document.addEventListener('click', e=>{
+        if (e.target.tagName === 'BUTTON' ) {
+            const li = e.target.parentNode?.parentNode?.closest('li');
+            if (!li) return;
+            const menu = li.querySelector(".app-navigation-entry-menu");
+            if (!menu) return;
+            if ( menu.classList.contains("open") ) {
+                menu.classList.remove("open");
+            } else {
+                appNavigationEntryMenuClose();        
+                menu.classList.add("open");
+            }
+            return;
+        }
+        appNavigationEntryMenuClose();        
+    })
+    // ------------------------------------------------
+
+
+    let wikiPages = new WikiPages(document.querySelector('li[data-id="pages"]').parentNode, onSelectWikiPage);
+    let wikiNavigation = new WikiNavigation(document.querySelector('li[data-id="wikis"]'), 
+                                wikiId => wikiPages.load(wikiId),
+                                e=>wikiPages.onClickAdd(e)
+                            );
+    
     function onSelectWikiPage(wikiPageId) {
         console.info(`JDG :: WikiPage selected ${wikiPageId}` );
         if ( wikiPageId > 0 ) {
