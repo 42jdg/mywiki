@@ -1,0 +1,21 @@
+{
+    "root": true,
+    "rules": {
+        "strict": 0,
+        "no-console": 0,
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "comma-dangle": ["error", "always-multiline"]
+    },
+    "env": {
+        "browser": true,
+        "node": true
+    },
+    "extends": "eslint:recommended"
+}
