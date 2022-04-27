@@ -1,6 +1,13 @@
 <?php
+// ToDo: Must be a better way to include this
+\OCP\Util::addStyle('mywiki', 'fontawesome/css/all.min');
+
+\OCP\Util::addScript('mywiki', 'easy-markdown-editor-master/dist/easymde.min');
+\OCP\Util::addStyle('mywiki', '../js/easy-markdown-editor-master/dist/easymde.min');
+
 \OCP\Util::addScript('mywiki', 'WikiDropdownHelper');
 \OCP\Util::addScript('mywiki', 'WikiNavigation');
+\OCP\Util::addScript('mywiki', 'WikiContent');
 \OCP\Util::addScript('mywiki', 'WikiPages');
 \OCP\Util::addScript('mywiki', 'script');
 \OCP\Util::addStyle('mywiki', 'style');

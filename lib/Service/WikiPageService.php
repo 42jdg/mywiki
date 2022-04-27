@@ -43,10 +43,13 @@ class WikiPageService {
     }
 
     public function find(int $wikiId, int $id, string $userId) {
-        echo "\nwikiId: $wikiId";
-        echo "\nid: $id";
-        echo "\nuserId: $userId";
-        die();
+        try {
+            $wiki = $this->mapper->find($wikiId, $userId);
+            $wikiPageContent = $this->wikiHelper->setFolderId($wiki->getFileId())->getWikiPageContent($id);
+        } catch(Exception $e) {
+            $this->handleException($e);
+        }        
+        return ['content'=>$wikiPageContent];
     }
 
     public function create(int $wikiId, int $parentFolderId, string $title, ?string $content, string $userId):array {

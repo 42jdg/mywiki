@@ -151,9 +151,24 @@ class WikiHelper {
         return $wikiTreePage->id; 
     }
 
+    public function getWikiPageContent($id): string {
+        try {
+            $pageFolder = $this->getFolderById($id);
+            $path = $pageFolder->getInternalPath().'/'.self::WIKI_FILE_CONTENT;
+            if ( $this->wikiFolder->nodeExists($path) ) {
+                return $this->getFileByName(self::WIKI_FILE_CONTENT)->getContent();
+            }
+            $this->wikiFolder->newFile(self::WIKI_FILE_CONTENT, '');
+        } catch(\Exception $ex) {
+            return null;
+        }
+        return '';
+    }    
+
     public function update(int $id, string $content) {
         try {
-            $path = $this->wikiFolder->getInternalPath().'/'.self::WIKI_FILE_CONTENT;
+            $pageFolder = $this->getFolderById($id);
+            $path = $pageFolder->getInternalPath().'/'.self::WIKI_FILE_CONTENT;
             if ( $this->wikiFolder->nodeExists($path) ) {
                 $this->getFileByName(self::WIKI_FILE_CONTENT)->putContent($content);
             } else {

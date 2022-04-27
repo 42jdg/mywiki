@@ -62,6 +62,8 @@ or:
 for integration tests
 
 
+// Markdown editor:  https://simplemde.com/
+// https://github.com/Ionaru/easy-markdown-editor
 
 
 //---
@@ -74,10 +76,12 @@ podman run --name=nextcloud --replace=true -p 8080:80 -v /absolute/path/to/apps:
 
 sudo docker run --name=nextcloud -p 8080:80 -v /absolute/path/to/apps:/var/www/html/custom_apps nextcloud
 
+
+Version000000Date20220302210900
 //---
 php ./occ migrations:execute <appId> <versionNumber>
 
-Example: sudo -u www-data php ./occ migrations:execute photos 000000Date20201002183800
+Example: sudo -u www-data php ./occ migrations:execute mywiki 000000Date20220302210900
 
 https://c.infdj.com/apps/files/?dir=/Documents/Manuals%20-%20Drivers/drivers/MAD&fileid=19227
 

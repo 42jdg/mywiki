@@ -6,9 +6,8 @@
 	</div>
 	<div id="app-settings-content">
 		<!-- Your settings in here -->
-		<ul class="with-icon">
-			<li data-id="deleteWiki">
-				<a href="#" class="icon-delete svg">Delete Current Wiki</a>
+		<ul>
+			<li>
 			</li>
 		</ul>
 	</div>

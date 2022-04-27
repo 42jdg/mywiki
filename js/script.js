@@ -34,38 +34,12 @@ var MyWiki = MyWiki || {};
         appNavigationEntryMenuClose();        
     })
     // ------------------------------------------------
-
-
-    let wikiPages = new WikiPages(document.querySelector('li[data-id="pages"]').parentNode, onSelectWikiPage);
+    let wikiContent = new WikiContent(document.getElementById('app-content-wrapper'));
+    let wikiPages = new WikiPages(document.querySelector('li[data-id="pages"]').parentNode, (wikiId, pageId)=>wikiContent.load(wikiId, pageId));
     let wikiNavigation = new WikiNavigation(document.querySelector('li[data-id="wikis"]'), 
                                 wikiId => wikiPages.load(wikiId),
                                 e=>wikiPages.onClickAdd(e)
                             );
-    
-    function onSelectWikiPage(wikiPageId) {
-        console.info(`JDG :: WikiPage selected ${wikiPageId}` );
-        if ( wikiPageId > 0 ) {
-            // wikiEditor.load(wikiPage.getWikiId(), wikiPageId );
-        }
-    }
-
-    // ---------------------------------------------------------------------------------
-    $(`#${appName}-test`).on('click',test);
-    function test() {
-        var baseUrl = OC.generateUrl('/apps/mywiki/wikis');
-        $.ajax({
-            url: baseUrl + '/test',
-            type: 'GET',
-            contentType: 'application/json'
-        }).done(function (response) {
-            // handle success
-            $('output').html(response);
-        }).fail(function (response, code) {
-            // handle failure
-            $('output').html('<h2>'+response.statusText+'</h2><code>'+response.responseText+'</code>');
-        });
-    }
-    // ---------------------------------------------------------------------------------
 
 })(window, jQuery, MyWiki);
 

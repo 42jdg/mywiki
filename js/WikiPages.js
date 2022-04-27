@@ -4,13 +4,14 @@ class WikiPages {
     /*
     * The container is the <ul> for the navigation panel
     */
-    constructor(container) {
+    constructor(container, onClickLoadPage) {
         this.ul = container;
-        this.wikiId = null;
+        this._onClickLoadPage = onClickLoadPage;
     }
 
     clear() {
-        this.ul.querySelectorAll('[data-wiki-id]').forEach( x=>x.remove() );
+        this.wikiId = null;
+        this.ul.querySelectorAll('[data-page-id]').forEach( x=>x.remove() );
     }
 
     getWikiId() {
@@ -20,9 +21,8 @@ class WikiPages {
     load(wikiId) {
         const self = this;
         console.info('JDG :: Loading wiki', self.getWikiId() );
-        this.wikiId = null;
+        this.clear();
         if (wikiId<=0) {
-            this.clear();
             return;
         }
 
@@ -43,12 +43,7 @@ class WikiPages {
 
 
     draw(pages, lvl=0, pid=0) {
-        let self=this;
-        if (lvl==0) {
-            this.clear();
-        }
-
-        // pages = [{"id":880,"pid":0,"title":"WikiTest","sort":1},...]
+        const self=this;
         pages
             .filter( x=>x.pid==pid )
             .sort( (a,b)=>a.sort - b.sort )
@@ -56,43 +51,52 @@ class WikiPages {
                 self.treeAdd(x.pid, x.id, x.title);
                 self.draw(pages, lvl+1, x.id);
         });
-
-        if (lvl==0) {
-            this.ul.querySelectorAll('button[data-id="add"]').forEach(x => x.addEventListener('click', e=>self.onClickAdd(e)) );
-            this.ul.querySelectorAll('button[data-id="delete"]').forEach(x => x.addEventListener('click', e=>self.onClickDelete(e)) );
-            this.ul.querySelectorAll('button[data-id="rename"]').forEach(x => x.addEventListener('click', e=>self.onClickEdit(e)) );
-            this.ul.querySelectorAll('.icon-close').forEach(x => x.addEventListener('click', e=>self.onClickClose(e)) );
-            this.ul.querySelectorAll('.icon-checkmark').forEach(x => x.addEventListener('click', e=>self.onClickRename(e)) );
-        }
     }
 
     // -----------------------------------------------------------------------------------------
+    addListener(root) {
+        const self = this;
+        root.querySelectorAll('a[data-id="page"]').forEach(x => x.addEventListener('click', e=>self.onClickLoadPage(e)) );
+        root.querySelectorAll('button[data-id="add"]').forEach(x => x.addEventListener('click', e=>self.onClickAdd(e)) );
+        root.querySelectorAll('button[data-id="delete"]').forEach(x => x.addEventListener('click', e=>self.onClickDelete(e)) );
+        root.querySelectorAll('button[data-id="rename"]').forEach(x => x.addEventListener('click', e=>self.onClickEdit(e)) );
+        root.querySelectorAll('.icon-close').forEach(x => x.addEventListener('click', e=>self.onClickClose(e)) );
+        root.querySelectorAll('.icon-checkmark').forEach(x => x.addEventListener('click', e=>self.onClickRename(e)) );
+    }
+
+    onClickLoadPage(e) {
+        const li = e.target.closest("li[data-page-id]");
+        let pageId = li.dataset.pageId;
+        this._onClickLoadPage(this.wikiId, pageId);
+    }
+
     onClickEdit(e) {
-        const li = e.target.closest("li[data-wiki-id]");
+        const li = e.target.closest("li[data-page-id]");
         li.querySelector("input").value = li.querySelector("a").innerText; 
         li.classList.add("editing");
     }
     onClickClose(e) {
-        const li = e.target.closest("li[data-wiki-id]");
+        const li = e.target.closest("li[data-page-id]");
         li.classList.remove("editing");
     }
     onClickRename(e) {
-        const li = e.target.closest("li[data-wiki-id]");
+        const li = e.target.closest("li[data-page-id]");
         li.classList.remove("editing");
 
-        let pageId = li.dataset.wikiId;
+        let pageId = li.dataset.pageId;
         let value = li.querySelector('input').value;
         this.rename(pageId, value);
     }
 
     onClickAdd(e) {
-        const li = e.target.closest("li[data-wiki-id]");
-        this.newPage(li?li.dataset.wikiId:0);
+        const li = e.target.closest("li[data-page-id]");
+        this.newPage(li?li.dataset.pageId:0);
     }
 
     onClickDelete(e) {
-        const li = e.target.closest("li[data-wiki-id]");
-        let pageId = li.dataset.wikiId;
+        const self = this;
+        const li = e.target.closest("li[data-page-id]");
+        let pageId = li.dataset.pageId;
         let pageTitle = li.querySelector('a').innerHTML;
 
         OC.dialogs.confirm( t(appName, 'Delete the wiki page "{title}"?', {title:pageTitle}),
@@ -129,7 +133,7 @@ class WikiPages {
 
     // -----------------------------------------------------------------------------------------
     treeDelete(pageId) {
-        const x = this.ul.querySelector(`[data-wiki-id="${pageId}"]`);
+        const x = this.ul.querySelector(`[data-page-id="${pageId}"]`);
         const pid = x.dataset.pid;
         x.parentNode.remove(x);
         this.treeDeleteChildren(pageId);
@@ -139,19 +143,19 @@ class WikiPages {
         this.ul
             .querySelectorAll(`[data-pid="${pageId}"]`)
             .forEach(x=>{
-                        self.treeDeleteBranch( x.dataset.wikiId );
+                        self.treeDeleteChildren( x.dataset.pageId );
                         x.parentNode.remove(x);
                     }
                 );
     }
 
     treeRename(pageId, title) {
-        this.ul.querySelector(`[data-wiki-id="${pageId}"] a`).innerHTML = title;
+        this.ul.querySelector(`[data-page-id="${pageId}"] a`).innerHTML = title;
     }
     
     treeAdd(pid, pageId, title) {
         let lvl = 0;        
-        let nextNode, lastNode, parent = this.ul.querySelector(`[data-wiki-id="${pid}"]`);
+        let nextNode, lastNode, parent = this.ul.querySelector(`[data-page-id="${pid}"]`);
         if ( parent===null ) {
             lastNode = this.ul.lastChild;
         } else {
@@ -163,14 +167,12 @@ class WikiPages {
             } while(nextNode && nextNode.dataset.pid!=parent.dataset.pid);
         }
 
-
-        const bullet = ' - ';
         let li = document.createElement("li");
-        // li.classList.add("editing");
-        li.dataset.wikiId = pageId;
+        li.classList.add(`wikiPage-lvl-${lvl}`);
+        li.dataset.pageId = pageId;
         li.dataset.pid = pid||this.wikiId;
         li.dataset.lvl = lvl;
-        li.innerHTML = `<a href="#">${bullet.repeat(lvl)} ${title}</a>
+        li.innerHTML = `<a href="#" data-id="page">${title}</a>
         <div class="app-navigation-entry-utils">
             <ul>
                 <li class="app-navigation-entry-utils-menu-button">
@@ -202,6 +204,7 @@ class WikiPages {
 		</ul>
 		</div>        
         `;
+        this.addListener(li);
 
         lastNode.parentNode.insertBefore(li, lastNode.nextSibling)
     }

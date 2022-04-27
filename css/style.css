@@ -1,23 +1,31 @@
-#hello {
-	color: red;
-}
-
 li[data-id="wikis"] select {
 	width: calc(100% - 50px);
 }
 
-.-myWikiControls {
-	width: 100%;
-	margin: .25em;
+li[class^="wikiPage-lvl-"] a::before {
+	display: inline-block; 
 }
-.-myWikiControls select {
-	width: 98%;
+.wikiPage-lvl-1 a::before {
+	content: "•"; 
+	width: 1em;
+}
+.wikiPage-lvl-2 a::before {
+	content: "• •";
+	width: 1.5em;
+}
+.wikiPage-lvl-3 a::before {
+	content: "• • •";
+	width: 2em;
 }
 
-option.separator {
-	font-size: 1px;
-	min-height:1px; 
-	max-height:1px; 
-	padding:0;  
-	background-color: #000000;
+#app {
+	width:100%;
+}
+
+#app-content #app-content-wrapper {
+	display: inline;
+}
+#app-content-wrapper textarea {
+	width:100%;
+	height:100%;
 }
