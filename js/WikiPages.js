@@ -7,6 +7,14 @@ class WikiPages {
     constructor(container, onClickLoadPage) {
         this.ul = container;
         this._onClickLoadPage = onClickLoadPage;
+
+        document.addEventListener("myWiki::change", function(e) {
+            console.log("myWiki::change",e.myWiki);
+          });
+       document.addEventListener("myWiki::saved", function(e) {
+            console.log("myWiki::saved", e.myWiki);
+          });
+
     }
 
     clear() {
@@ -55,6 +63,11 @@ class WikiPages {
         });
     }
 
+    highlightSelectedPage(pageId) {
+        this.ul.querySelectorAll('li[data-page-id]').forEach( x=>x.querySelector('a').classList.remove('active') );
+        this.ul.querySelector(`li[data-page-id="${pageId}"] a`).classList.add('active');
+    }
+
     // -----------------------------------------------------------------------------------------
     addListener(root) {
         const self = this;
@@ -69,8 +82,11 @@ class WikiPages {
     onClickLoadPage(e) {
         const li = e.target.closest("li[data-page-id]");
         let pageId = li.dataset.pageId;
+        this.highlightSelectedPage(pageId);
         this._onClickLoadPage(this.wikiId, pageId);
     }
+
+    
 
     onClickEdit(e) {
         const li = e.target.closest("li[data-page-id]");

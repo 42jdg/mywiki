@@ -44,7 +44,13 @@ class WikiContent {
 
         this.timeout = null;
         this.mde.codemirror.on("change", (instance, changeObj) => {
+            if(self.loading) return;
+
             console.log(changeObj);
+
+            var event = new CustomEvent("myWiki::change", {myWiki:{ wikiId:self.wikiId,pageId:self.pageId }});
+            document.dispatchEvent(event);
+
             clearTimeout(self.timeout);
             self.timeout = setTimeout(()=>self._mde_save(), this.waitSecondsToAutoSave);
         });
@@ -55,8 +61,10 @@ class WikiContent {
         this.save(this.mde.value());
     }
     _mde_set(content) {
+        this.loading = true;
         this.mde.clearAutosavedValue();
         this.mde.value(content);
+        this.loading = false;
     }
     _mde_get() {
         return this.mde.value();
@@ -128,6 +136,8 @@ class WikiContent {
             data: JSON.stringify({title:null, content:content})
         }).done(function (response) {
             console.info(`JDG :: WikiContent.save(${self.wikiId}, ${self.pageId})`, response);
+            var event = new CustomEvent("myWiki::saved", {myWiki:{ wikiId:self.wikiId,pageId:self.pageId }});
+            document.dispatchEvent(event);
         }).fail(function (response, code) {
             OC.dialogs.alert('Error', t(appName,'Error saving wiki page({wikiId}, {pageId})',{wikiId:self.wikiId,pageId:self.pageId}));
             console.error(`JDG :: WikiContent.save(${self.wikiId}, ${self.pageId})`, response);
