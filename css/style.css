@@ -5,15 +5,15 @@ li[data-id="wikis"] select {
 li[class^="wikiPage-lvl-"] a::before {
 	display: inline-block; 
 }
-.wikiPage-lvl-1 a::before {
+.wikiPage-lvl-1>a::before {
 	content: "•"; 
 	width: 1em;
 }
-.wikiPage-lvl-2 a::before {
+.wikiPage-lvl-2>a::before {
 	content: "• •";
 	width: 1.5em;
 }
-.wikiPage-lvl-3 a::before {
+.wikiPage-lvl-3>a::before {
 	content: "• • •";
 	width: 2em;
 }

@@ -81,8 +81,7 @@ class WikiHelper {
             if ( $this->wikiFolder->nodeExists($path) ) {
                 $this->getFileByName(self::WIKI_FILE)->putContent($data);
             } else {
-                $this->wikiFolder
-                    ->newFile(self::WIKI_FILE, $data);
+                $this->wikiFolder->newFile(self::WIKI_FILE, $data);
             }
         } catch(\Exception $ex) {
             return false;
@@ -154,26 +153,22 @@ class WikiHelper {
     public function getWikiPageContent($id): string {
         try {
             $pageFolder = $this->getFolderById($id);
-            $path = $pageFolder->getInternalPath().'/'.self::WIKI_FILE_CONTENT;
-            if ( $this->wikiFolder->nodeExists($path) ) {
-                return $this->getFileByName(self::WIKI_FILE_CONTENT)->getContent();
+            if ( $pageFolder->nodeExists(self::WIKI_FILE_CONTENT) ) {
+                return $pageFolder->get(self::WIKI_FILE_CONTENT)->getContent();
             }
-            $this->wikiFolder->newFile(self::WIKI_FILE_CONTENT, '');
         } catch(\Exception $ex) {
             return null;
         }
         return '';
-    }    
+    }
 
     public function update(int $id, string $content) {
         try {
             $pageFolder = $this->getFolderById($id);
-            $path = $pageFolder->getInternalPath().'/'.self::WIKI_FILE_CONTENT;
-            if ( $this->wikiFolder->nodeExists($path) ) {
-                $this->getFileByName(self::WIKI_FILE_CONTENT)->putContent($content);
+            if ( $pageFolder->nodeExists(self::WIKI_FILE_CONTENT) ) {
+                $pageFolder->get(self::WIKI_FILE_CONTENT)->putContent($content);
             } else {
-                $this->wikiFolder
-                    ->newFile(self::WIKI_FILE_CONTENT, $content);
+                $pageFolder->newFile(self::WIKI_FILE_CONTENT, $content);
             }
         } catch(\Exception $ex) {
             return false;

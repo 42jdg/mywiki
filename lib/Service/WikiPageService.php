@@ -45,7 +45,9 @@ class WikiPageService {
     public function find(int $wikiId, int $id, string $userId) {
         try {
             $wiki = $this->mapper->find($wikiId, $userId);
-            $wikiPageContent = $this->wikiHelper->setFolderId($wiki->getFileId())->getWikiPageContent($id);
+            $wikiPageContent = $this->wikiHelper
+                                    ->setFolderId($wiki->getFileId())
+                                    ->getWikiPageContent($id);
         } catch(Exception $e) {
             $this->handleException($e);
         }        

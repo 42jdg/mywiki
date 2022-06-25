@@ -45,12 +45,12 @@ class WikiMapper extends QBMapper {
 
         if ($filter) {
             if (array_key_exists('title',$filter) ) {
-                $qb->where(
+                $qb->andwhere(
                     $qb->expr()->eq('title', $qb->createNamedParameter($filter['title']))
                 );
             }                    
             if (array_key_exists('fileId',$filter) ) {
-                $qb->where(
+                $qb->andwhere(
                     $qb->expr()->eq('file_id', $qb->createNamedParameter($filter['fileId']))
                 );
             }      

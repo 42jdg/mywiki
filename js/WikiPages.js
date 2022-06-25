@@ -12,6 +12,8 @@ class WikiPages {
     clear() {
         this.wikiId = null;
         this.ul.querySelectorAll('[data-page-id]').forEach( x=>x.remove() );
+
+        document.querySelectorAll('#app-navigation .active').forEach(e=>e.class.remove('.active'))
     }
 
     getWikiId() {
@@ -167,6 +169,7 @@ class WikiPages {
             } while(nextNode && nextNode.dataset.pid!=parent.dataset.pid);
         }
 
+        let link2folder = OC.generateUrl('/apps/files?fileid='+pageId);
         let li = document.createElement("li");
         li.classList.add(`wikiPage-lvl-${lvl}`);
         li.dataset.pageId = pageId;
@@ -190,7 +193,7 @@ class WikiPages {
 		<div class="app-navigation-entry-menu">
 		<ul>
             <li>
-                <button data-id="openFolder" class="icon-folder">Open Folder</button>
+                <a data-id="openFolder" class="icon-folder" href="${link2folder}">Open Folder</a>
             </li>
 			<li>
 				<button data-id="add" class="icon-add">Add Page</button>
