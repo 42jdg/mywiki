@@ -33,6 +33,9 @@ class WikiContent {
                                     },
                                     element: this.textarea,
                                     hideIcons:[],
+                                    insertTexts:{
+                                        image:['![](', '/index.php/core/preview?fileId=XXXX&x=3840&y=2160&a=true)']
+                                    },
                                     minHeight:height+"px",
                                     maxHeight:height+"px",
                                     sideBySideFullscreen: false,
@@ -48,7 +51,7 @@ class WikiContent {
 
             console.log(changeObj);
 
-            var event = new CustomEvent("myWiki::change", {myWiki:{ wikiId:self.wikiId,pageId:self.pageId }});
+            var event = new CustomEvent("myWiki::change", {detail:{ wikiId:self.wikiId,pageId:self.pageId }});
             document.dispatchEvent(event);
 
             clearTimeout(self.timeout);
@@ -122,25 +125,27 @@ class WikiContent {
     }
 
     save(content) {
-        const self = this;
-        console.info(`JDG :: Saving wiki page ${self.wikiId}-${self.pageId}`);
-        if (self.wikiId<=0 || self.pageId<=0) {
+        const wikiId = this.wikiId;
+        const pageId = this.pageId;
+
+        console.info(`JDG :: Saving wiki page ${wikiId}-${pageId}`);
+        if (wikiId<=0 || pageId<=0) {
             return;
         }
 
-        var baseUrl = OC.generateUrl('/apps/mywiki/wiki/'+self.wikiId);
+        var baseUrl = OC.generateUrl('/apps/mywiki/wiki/'+wikiId);
         $.ajax({
-            url: baseUrl+'/'+self.pageId,
+            url: baseUrl+'/'+pageId,
             type: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify({title:null, content:content})
         }).done(function (response) {
-            console.info(`JDG :: WikiContent.save(${self.wikiId}, ${self.pageId})`, response);
-            var event = new CustomEvent("myWiki::saved", {myWiki:{ wikiId:self.wikiId,pageId:self.pageId }});
+            console.info(`JDG :: WikiContent.save(${wikiId}, ${pageId})`, response);
+            var event = new CustomEvent("myWiki::saved", {detail:{ wikiId:wikiId,pageId:pageId }});
             document.dispatchEvent(event);
         }).fail(function (response, code) {
-            OC.dialogs.alert('Error', t(appName,'Error saving wiki page({wikiId}, {pageId})',{wikiId:self.wikiId,pageId:self.pageId}));
-            console.error(`JDG :: WikiContent.save(${self.wikiId}, ${self.pageId})`, response);
+            OC.dialogs.alert('Error', t(appName,'Error saving wiki page({wikiId}, {pageId})',{wikiId:wikiId,pageId:pageId}));
+            console.error(`JDG :: WikiContent.save(${wikiId}, ${pageId})`, response);
         }); 
     }
 }

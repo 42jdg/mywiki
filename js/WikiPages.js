@@ -5,15 +5,18 @@ class WikiPages {
     * The container is the <ul> for the navigation panel
     */
     constructor(container, onClickLoadPage) {
+        const self = this;
         this.ul = container;
         this._onClickLoadPage = onClickLoadPage;
 
         document.addEventListener("myWiki::change", function(e) {
-            console.log("myWiki::change",e.myWiki);
+            console.log("myWiki::change",e.detail);
+            self.ul.querySelector(`li[data-page-id="${e.detail.pageId}"] a`).classList.add('modified');
           });
        document.addEventListener("myWiki::saved", function(e) {
-            console.log("myWiki::saved", e.myWiki);
-          });
+            console.log("myWiki::saved", e.detail);
+            self.ul.querySelector(`li[data-page-id="${e.detail.pageId}"] a`).classList.remove('modified');
+        });
 
     }
 
@@ -21,7 +24,7 @@ class WikiPages {
         this.wikiId = null;
         this.ul.querySelectorAll('[data-page-id]').forEach( x=>x.remove() );
 
-        document.querySelectorAll('#app-navigation .active').forEach(e=>e.class.remove('.active'))
+        document.querySelectorAll('#app-navigation .active').forEach(e=>e.class.remove('active'))
     }
 
     getWikiId() {

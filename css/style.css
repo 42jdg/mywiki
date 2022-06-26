@@ -1,3 +1,7 @@
+#app-navigation:not(.vue) > ul > li > a[data-id].modified {
+	color:red;
+}
+
 li[data-id="wikis"] select {
 	width: calc(100% - 50px);
 }
