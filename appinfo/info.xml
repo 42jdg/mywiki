@@ -11,7 +11,7 @@
     <namespace>MyWiki</namespace>
     <category>office</category>
     <category>organization</category>
-    <bugs>https://git.jd.guillen.io/wiki4nextcloud/issues</bugs>
+    <bugs>https://git.jd.guillen.io/mywiki/issues</bugs>
     <dependencies>
         <nextcloud min-version="12" max-version="25"/>
     </dependencies>
